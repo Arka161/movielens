@@ -9,4 +9,17 @@ The program checks correlation between a movie the user likes and other movies a
 Also calculated Pearson Product Moment Correlation Coefficient(PMCC) for improving suggestions. However, Collaborative Filtering has the 
 Cold Start issue in computation. 
 
+# How to use the program? 
+```
+python index.py
+```
+You'll be asked to select the type of filtering you need. Make sure you have atleast ~2.5GB of free RAM to avoid system crashes. 
+For Collaborative Filtering, you will be asked to enter a movie you like. 
+
+```
+favoured_movie_title = 'Beauty and the Beast (1991)'
+```
+You can edit the variable with a movie of your choice to make the system get to recommend movies you enjoy. 
+
+
 
