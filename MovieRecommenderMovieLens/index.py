@@ -21,7 +21,7 @@ while variable:
 variable=raw_input("What would you like to do? ")
 if variable=="1":
 #collaborative filtering section
-ratings_df = pd.read_table('ml-20m/ratings.csv', header=None, sep=',', names=['user_id', 'movie_id', 'rating', 'timestamp'],engine='python')
+ratings_df = pd.read_table('ml-20m/ratings.dat', header=None, sep='::', names=['user_id', 'movie_id', 'rating', 'timestamp'],engine='python')
 movies_df = pd.read_table('ml-20m/movies.csv', header=None, sep=',', names=['movie_id', 'movie_title', 'movie_genre'],engine='python')
 
 
