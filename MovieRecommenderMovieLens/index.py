@@ -21,59 +21,59 @@ while variable:
 variable=raw_input("What would you like to do? ")
 if variable=="1":
 #collaborative filtering section
-ratings_df = pd.read_table('ml-20m/ratings.dat', header=None, sep='::', names=['user_id', 'movie_id', 'rating', 'timestamp'],engine='python')
-movies_df = pd.read_table('ml-20m/movies.csv', header=None, sep=',', names=['movie_id', 'movie_title', 'movie_genre'],engine='python')
+    ratings_df = pd.read_table('ml-20m/ratings.dat', header=None, sep='::', names=['user_id', 'movie_id', 'rating', 'timestamp'],engine='python')
+    movies_df = pd.read_table('ml-20m/movies.csv', header=None, sep=',', names=['movie_id', 'movie_title', 'movie_genre'],engine='python')
 
 
 #Seperating the given generes in the movies file
-movies_df = pd.concat([movies_df, movies_df.movie_genre.str.get_dummies(sep='|')], axis=1)
+    movies_df = pd.concat([movies_df, movies_df.movie_genre.str.get_dummies(sep='|')], axis=1)
 
 
 #Individual Consideration
-movie_categories = movies_df.columns[3:]
-movies_df.loc[0]
+    movie_categories = movies_df.columns[3:]
+    movies_df.loc[0]
 
 #Timestamp is not needed in the code
-del ratings_df['timestamp']
+    del ratings_df['timestamp']
 
 #Rename movie_id to movie_title
-ratings_df = pd.merge(ratings_df, movies_df, on='movie_id')[['user_id', 'movie_title', 'movie_id','rating']]
+    ratings_df = pd.merge(ratings_df, movies_df, on='movie_id')[['user_id', 'movie_title', 'movie_id','rating']]
 
 
-ratings_mtx_df = ratings_df.pivot_table(values='rating', index='user_id', columns='movie_title')
-ratings_mtx_df.fillna(0, inplace=True)
+    ratings_mtx_df = ratings_df.pivot_table(values='rating', index='user_id', columns='movie_title')
+    ratings_mtx_df.fillna(0, inplace=True)
 
-movie_index = ratings_mtx_df.columns
+    movie_index = ratings_mtx_df.columns
 #We have userid in rows and movie title in the coloumns
 
 #Calculate the Pearson Product Moment Correlation Coefficient(PMCC)
 #Reference: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
-matrix = np.corrcoef(ratings_mtx_df.T)
-matrix.shape
+    matrix = np.corrcoef(ratings_mtx_df.T)
+    matrix.shape
 #We invert(transpose) the matrix to avoid getting similarity between users.we need movies
 
-favoured_movie_title = 'Beauty and the Beast (1991)'
+    favoured_movie_title = 'Beauty and the Beast (1991)'
 
-favoured_movie_index = list(movie_index).index(favoured_movie_title)
+    favoured_movie_index = list(movie_index).index(favoured_movie_title)
 
-P = matrix[favoured_movie_index]
+    P = matrix[favoured_movie_index]
 
 #Return the movie which are similar to Beauty and the Beast
-list(movie_index[(P>0.5) & (P<1.0)])
+    list(movie_index[(P>0.5) & (P<1.0)])
 
-def movie_similarity(movie_title):
-    movie_idx = list(movie_index).index(movie_title)
-    return matrix[movie_idx]
+    def movie_similarity(movie_title):
+        movie_idx = list(movie_index).index(movie_title)
+        return matrix[movie_idx]
 
-def movie_recommendations(user_movies):
+    def movie_recommendations(user_movies):
 
-  movie_similarities = np.zeros(matrix.shape[0])
-    for movie_id in user_movies:
-        movie_similarities = movie_similarities + movie_similarity(movie_id)
-    similarities_df = pd.DataFrame({
-        'movie_title': movie_index,
-        'sum_similarity': movie_similarities
-        })
+         movie_similarities = np.zeros(matrix.shape[0])
+         for movie_id in user_movies:
+            movie_similarities = movie_similarities + movie_similarity(movie_id)
+            similarities_df = pd.DataFrame({
+            'movie_title': movie_index,
+            'sum_similarity': movie_similarities
+            })
     similarities_df = similarities_df[~(similarities_df.movie_title.isin(user_movies))]
     similarities_df = similarities_df.sort_values(by=['sum_similarity'], ascending=False)
     return similarities_df
