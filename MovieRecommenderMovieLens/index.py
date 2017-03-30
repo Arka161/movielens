@@ -157,4 +157,4 @@ print("Thank you for trying my recommender!")
 
 
 elif variable!="1" | "2":
-print("You selected an invalid processing algorithm try again ")
+    print("You selected an invalid processing algorithm try again ")
